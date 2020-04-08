@@ -1,0 +1,60 @@
+<html>
+    <head>
+        <title>Cross Domain Search</title>
+    </head>
+    <body>
+        Cross Domain Search ... of DOOM <br><br>
+
+        <form method="get" action="../cgi-bin/crossdomain.py" id="form1">
+
+            <select id="searchfor" name="searchfor" onchange="check()">
+                <option value='0'>--Select--</option>
+                <option value='ipaddress'>BY_IP</option>
+                <option value='name'>BY_NAME</option>
+                <option value='network'>BY_NETWORK</option>
+            </select>
+
+            <br><br>
+            Search by IP : <input id="ip2find" type="text" size="15" maxlength="15" name="ip2find" disabled=true> <br>
+            Search by Name : <input id="name2find" type="text" size="30" maxlength="30" name="name2find" disabled=true><br>
+            Search by Network : <input id="net2find" type="text" size="15" maxlength="15" name="net2find" disabled=true> 
+            Netmask (255.255.255.0 or 24) <input id="mask2find" type="text" size="15" maxlength="15" name="mask2find" disabled=true><br>
+
+            <input type="submit" value="submit" name="submit"><br>
+        
+        </form>
+
+        <script>
+            function check()
+            {
+                switch(document.getElementById('searchfor').value)
+                {
+                    case 'ipaddress': 
+                        document.getElementById('ip2find').disabled=false;
+                        document.getElementById('name2find').disabled=true;
+                        document.getElementById('net2find').disabled=true;
+                        document.getElementById('mask2find').disabled=true;
+                        break;
+                    case 'name': 
+                        document.getElementById('ip2find').disabled=true;
+                        document.getElementById('name2find').disabled=false;
+                        document.getElementById('net2find').disabled=true;
+                        document.getElementById('mask2find').disabled=true;
+                        break;
+                    case 'network': 
+                        document.getElementById('ip2find').disabled=true;
+                        document.getElementById('name2find').disabled=true;
+                        document.getElementById('net2find').disabled=false;
+                        document.getElementById('mask2find').disabled=false;
+                        break;
+                    default: 
+                        document.getElementById('ip2find').disabled=true;
+                        document.getElementById('name2find').disabled=true;
+                        document.getElementById('net2find').disabled=true;
+                        document.getElementById('mask2find').disabled=true;
+                }
+            }
+        </script>
+
+    </body>
+</html>
