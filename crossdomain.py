@@ -75,6 +75,7 @@ def search_domain_4_ip(ip_addr, cma, ip_2_find):
                 print("<br>")
                 print(check_host['objects'][x]['ipv4-address'])
                 print("<br>")
+                whereused_by_name(check_host['objects'][x]['name'], ip_addr, cma, cma_sid)
         
         #time.sleep(5)
         logout_result = apifunctions.api_call(ip_addr, "logout", {}, cma_sid)
@@ -109,6 +110,7 @@ def search_domain_4_name(ip_addr, cma, name):
                 print("<br>")
                 print(chkname['objects'][x]['type'])
                 print("<br>")
+                whereused_by_name(name, ip_addr, cma, cma_sid)
         
         #time.sleep(5)
         logout_result = apifunctions.api_call(ip_addr, "logout", {}, cma_sid)
@@ -168,6 +170,7 @@ def search_domain_4_network(ip_addr, cma, network, netmask):
                     print("network match at  <br>")
                     found = 1
                     print(chknet['objects'][i]['name'])
+                    whereused_by_name(chknet['objects'][i]['name'], ip_addr, cma, cma_sid)
                     print("<br>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^<br>")
              # end of for loop
 
@@ -186,6 +189,84 @@ def search_domain_4_network(ip_addr, cma, network, netmask):
             emergency_logout = apifunctions.api_call(ip_addr, "logout", {}, cma_sid)
         print("can't get into domain<br>")
 #end of search_domain_4_network
+
+"""
+do a where used on the cma for a name
+"""
+def whereused_by_name(name, ip_addr, cma, sid):
+    debug = 0
+
+    print("Doing function Where Used<br>")
+    search_where_json = {
+        "name" : name
+    }
+
+    where_used_result = apifunctions.api_call(ip_addr, "where-used", search_where_json, sid)
+
+    if(debug == 1):
+        print("^^^^^^^^^^^^^^^^^^^^<br>")
+        print(json.dumps(where_used_result))
+        print("<br>")
+        print("!!!!!!!!!!!!!!!!!!!!<br>")
+
+    try:
+        dtotal = where_used_result['used-directly']['total']
+        print("Total Where Used Directly : <br>")
+        print(dtotal)
+        print("<br>")
+
+        len_obj          = len(where_used_result['used-directly']['objects'])
+        len_access_rule  = len(where_used_result['used-directly']['access-control-rules'])
+        len_threat_prev  = len(where_used_result['used-directly']['threat-prevention-rules'])
+        len_nat_rules    = len(where_used_result['used-directly']['nat-rules'])
+
+        if(debug == 1):
+            print(len_obj)
+            print("<br>")
+            print(len_access_rule)
+            print("<br>")
+            print(len_threat_prev)
+            print("<br>")
+            print(len_nat_rules)
+            print("<br>")
+
+        print("Use in Object :<br>")
+        for x in range(len_obj):
+            print("Use in " + where_used_result['used-directly']['objects'][x]['name'] + " which is a " + where_used_result['used-directly']['objects'][x]['type'])
+            print("<br>")
+            #print(where_used_result['used-directly']['objects'][x]['name'])
+            #print(where_used_result['used-directly']['objects'][x]['type'])
+
+        print("Use in Access Rule:<br>")
+        for x in range(len_access_rule):
+            print("use in policy : " + where_used_result['used-directly']['access-control-rules'][x]['layer']['name'] + " rule-number " + where_used_result['used-directly']['access-control-rules'][x]['position'])
+            print("<br>")
+            #print(where_used_result['used-directly']['access-control-rules'][x]['position'])
+            #print(where_used_result['used-directly']['access-control-rules'][x]['layer']['name'])
+        
+        print("Use in Threat Prevention Rules:<br>")
+        for x in range(len_threat_prev):
+            print("feature not avaliable.  send greg what you searched for")
+            print("<br>")
+        
+        print("Use in Nat Rules<br>")
+        for x in range(len_nat_rules):
+            print("use in nat rules | policy " + where_used_result['used-directly']['nat-rules'][x]['package']['name'] + " nat-rule number " + where_used_result['used-directly']['nat-rules'][x]['position'])
+            print("<br>")
+            #print(where_used_result['used-directly']['nat-rules'][x]['position'])
+            #print(where_used_result['used-directly']['nat-rules'][x]['package']['name'])
+    except:
+        print("Not used or not searchable<br>")
+
+    try:
+        itotal = where_used_result['used-indirectly']['total']
+        print("Total Where Used InDirectly : <br>")
+        print(itotal)
+        print("<br>")
+    except:
+        pass
+#end of whereused_by_name()
+
 
 def main():
     debug = 1
