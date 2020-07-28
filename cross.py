@@ -217,7 +217,32 @@ def whereused_by_name(name, ip_addr, cma, sid):
         print("Use in Access Rule:")
         for x in range(len_access_rule):
             print("use in policy : " + where_used_result['used-directly']['access-control-rules'][x]['layer']['name'] + " rule-number " + where_used_result['used-directly']['access-control-rules'][x]['position'])
-            #print(where_used_result['used-directly']['access-control-rules'][x]['position'])
+            print("++++++++++++++++++++++\n")
+            print(where_used_result['used-directly']['access-control-rules'][x])
+            print(where_used_result['used-directly']['access-control-rules'][x]['rule']['uid'])
+
+            tmp_uid = where_used_result['used-directly']['access-control-rules'][x]['rule']['uid']
+            tmp_layer = where_used_result['used-directly']['access-control-rules'][x]['layer']['name']
+
+            get_access_rule = {
+                'uid' : tmp_uid,
+                'layer' : tmp_layer
+            }
+
+            access_rule_result = apifunctions.api_call(ip_addr, 'show-access-rule', get_access_rule, sid)
+
+            print("#####################\n")
+            print(json.dumps(access_rule_result))
+            print("\n")
+            print(access_rule_result['source'])
+            print("++\n")
+            print(access_rule_result['destination'])
+            print("++\n")
+            print(access_rule_result['service'])
+            print("++\n")
+            print("#####################\n")
+
+            print("++++++++++++++++++++++\n")
             #print(where_used_result['used-directly']['access-control-rules'][x]['layer']['name'])
         
         print("Use in Threat Prevention Rules")

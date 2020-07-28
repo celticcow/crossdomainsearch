@@ -8,7 +8,7 @@ import sys
 Collection of Functions to do CheckPoint R80.xx api calls
 
 Created : 08.12.2019 -- gdunlap
-Last Update : 02.06.2020 -- gdunlap
+Last Update : 06.15.2020 -- gdunlap
 
 version 1.1
 
@@ -456,5 +456,34 @@ def add_a_udp_port(ip_addr, port, sid):
                 portadd = api_call(ip_addr, "add-service-udp", port_to_add, sid)
             else:
                 print("object with name " + name + " exist already but does not match port number")
+
+"""
+Check to see if an object is in a locked state or not
+"""
+def object_is_locked(ip_addr, name, sid):
+    debug = 0
+
+    if(debug == 1):
+        print("in object_is_locked()")
+
+    check_object = {
+        "order" : [{"ASC" : "name"}], 
+        "in" : ["name", name],
+        "details-level" : "full"      
+    }
+    
+    obj_result = api_call(ip_addr, "show-objects", check_object, sid)
+
+    if(debug == 1):
+        print(json.dumps(obj_result))
+        print("\n\n")
+    
+    if(obj_result['objects'][0]['meta-info']['lock'] == "unlocked"):
+        # object is unlocked so it's not false to is_locked
+        return False
+    else:
+        # default to locked
+        return True
+
 
 #end of file
