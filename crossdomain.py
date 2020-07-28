@@ -241,6 +241,19 @@ def whereused_by_name(name, ip_addr, cma, sid):
         for x in range(len_access_rule):
             print("use in policy : " + where_used_result['used-directly']['access-control-rules'][x]['layer']['name'] + " rule-number " + where_used_result['used-directly']['access-control-rules'][x]['position'])
             print("<br>")
+
+            tmp_uid = where_used_result['used-directly']['access-control-rules'][x]['rule']['uid']
+            tmp_layer = where_used_result['used-directly']['access-control-rules'][x]['layer']['name']
+
+            get_access_rule = {
+                'uid' : tmp_uid,
+                'layer' : tmp_layer
+            }
+
+            access_rule_result = apifunctions.api_call(ip_addr, 'show-access-rule', get_access_rule, sid)
+
+            rule_output(access_rule_result)
+
             #print(where_used_result['used-directly']['access-control-rules'][x]['position'])
             #print(where_used_result['used-directly']['access-control-rules'][x]['layer']['name'])
         
@@ -267,6 +280,54 @@ def whereused_by_name(name, ip_addr, cma, sid):
         pass
 #end of whereused_by_name()
 
+"""
+output of rule
+"""
+def rule_output(access_rule_result):
+    out = "<br>"
+    debug = 0
+
+    print("Rule_Output", end=out)
+
+    print("#####################", end=out)
+    if(debug == 1):
+        print(json.dumps(access_rule_result), end=out)
+    
+    s_len = len(access_rule_result['source'])
+    d_len = len(access_rule_result['destination'])
+    p_len = len(access_rule_result['service'])
+
+    if(debug == 1):
+        print(access_rule_result['source'], end=out)
+        print("++", end=out)
+        print(access_rule_result['destination'], end=out)
+        print("++", end=out)
+        print(access_rule_result['service'], end=out)
+        print("++", end=out)
+        print("#####################", end=out)
+        #print(s_len) #+ "  " + d_len + "  " + p_len, end=out)
+
+    print("SOURCE:", end=out)
+    for x in range(s_len):
+        #print(out)
+        print(access_rule_result['source'][x]['name'], end=" : ")
+        print(access_rule_result['source'][x]['type'], end=out)
+        #print("______________________", end=out)
+    
+    print("DESTINATION:", end=out)
+    for x in range(d_len):
+        #print(out)
+        print(access_rule_result['destination'][x]['name'], end=" : ")
+        print(access_rule_result['destination'][x]['type'], end=out)
+    
+    print("PORTS:", end=out)
+    for x in range(p_len):
+        #print(out)
+        print(access_rule_result['service'][x]['name'], end=out)
+        #print(access_rule_result['service'][x]['type'], end=out)
+
+    print("++++++++++++++++++++++", end=out)
+#end of rule_output
 
 def main():
     debug = 1
