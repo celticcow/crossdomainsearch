@@ -211,6 +211,12 @@ def whereused_by_name(name, ip_addr, cma, sid):
         print("Use in Object :")
         for x in range(len_obj):
             print("Use in " + where_used_result['used-directly']['objects'][x]['name'] + " which is a " + where_used_result['used-directly']['objects'][x]['type'])
+            sub_search = where_used_result['used-directly']['objects'][x]['name']
+
+            ### add on 07.30 
+            print("################################################\n")
+            whereused_by_name(sub_search, ip_addr, cma, sid)
+
             #print(where_used_result['used-directly']['objects'][x]['name'])
             #print(where_used_result['used-directly']['objects'][x]['type'])
 
@@ -262,12 +268,14 @@ output of rule
 """
 def rule_output(access_rule_result):
     out = "\n"
-    debug = 1
+    debug = 0
 
     print("Rule_Output", end=out)
 
     print("#####################", end=out)
-    print(json.dumps(access_rule_result), end=out)
+
+    if(debug == 1):
+        print(json.dumps(access_rule_result), end=out)
     
     s_len = len(access_rule_result['source'])
     d_len = len(access_rule_result['destination'])

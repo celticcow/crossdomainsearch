@@ -234,6 +234,11 @@ def whereused_by_name(name, ip_addr, cma, sid):
         for x in range(len_obj):
             print("Use in " + where_used_result['used-directly']['objects'][x]['name'] + " which is a " + where_used_result['used-directly']['objects'][x]['type'])
             print("<br>")
+            sub_search = where_used_result['used-directly']['objects'][x]['name']
+            ### add on 07.30 
+            print("################ Sub Search for " + sub_search + " ########################<br>")
+            whereused_by_name(sub_search, ip_addr, cma, sid)
+
             #print(where_used_result['used-directly']['objects'][x]['name'])
             #print(where_used_result['used-directly']['objects'][x]['type'])
 
