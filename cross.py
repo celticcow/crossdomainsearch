@@ -84,6 +84,41 @@ def search_domain_4_ip(ip_addr, cma, ip_2_find):
 #end of search_domain_4_ip
 
 """
+login to domain and see if network range object with IP exist
+"""
+def search_domain_4_range(ip_addr, cma, ip_2_find):
+    debug = 1
+    try:
+        cma_sid = apifunctions.login("roapi", "1qazxsw2", ip_addr, cma)
+        
+        if(debug == 1):
+            print("session id : " + cma_sid)
+        
+        check_range_obj = {"type" : "address-range", "filter" : ip_2_find, "ip-only" : "true"}
+        check_range = apifunctions.api_call(ip_addr, "show-objects", check_range_obj, cma_sid)
+
+        if(check_range['total'] == 0):
+            print("no range exist")
+        else:
+            #print(json.dumps(check_range))
+            for x in range(check_range['total']):
+                if(check_range['objects'][x]['name'] == "All_Internet"):
+                    continue
+                print(check_range['objects'][x]['name'])
+                #print(check_host['objects'][x]['ipv4-address'])
+                whereused_by_name(check_range['objects'][x]['name'], ip_addr, cma, cma_sid)
+        
+        time.sleep(5)
+        logout_result = apifunctions.api_call(ip_addr, "logout", {}, cma_sid)
+        if(debug == 1):
+            print(logout_result)
+    except:
+        if(cma_sid != ""):
+            emergency_logout = apifunctions.api_call(ip_addr, "logout", {}, cma_sid)
+        print("can't get into domain")
+#end of search_domain_4_range
+
+"""
 login to domain and see if an object with name exist
 """
 def search_domain_4_name(ip_addr, cma, name):
@@ -320,20 +355,23 @@ def main():
     print("X-Domain Search 0.1")
 
     mds_ip = "146.18.96.16"
-    search4 = "146.18.2.137"
+    search4 = "8.8.8.8"
 
     domain_list = get_domains(mds_ip)
 
     print(domain_list)
     for x in domain_list:
         print("Searching CMA : " + x)
-        #search_domain_4_ip(mds_ip, x, search4)
+        print("Host Search")
+        search_domain_4_ip(mds_ip, x, search4)
+        print("range search")
+        search_domain_4_range(mds_ip, x, search4)
         #search_domain_4_name(mds_ip, x, "loki.infosec.fedex.com")
         #search_domain_4_name(mds_ip, x, "unused")
 
         #search_domain_4_network(mds_ip, x, "146.18.0.0", "255.255.0.0")
         #print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
-        search_domain_4_network(mds_ip, x, "146.18.2.0", "24")
+        #search_domain_4_network(mds_ip, x, "146.18.2.0", "24")
         print("=======================================")
 
 if __name__ == "__main__":

@@ -89,6 +89,41 @@ def search_domain_4_ip(ip_addr, cma, ip_2_find):
 #end of search_domain_4_ip
 
 """
+login to domain and see if network range object with IP exist
+"""
+def search_domain_4_range(ip_addr, cma, ip_2_find):
+    debug = 1
+    try:
+        cma_sid = apifunctions.login("roapi", "1qazxsw2", ip_addr, cma)
+        
+        if(debug == 1):
+            print("session id : " + cma_sid, end="<br>")
+        
+        check_range_obj = {"type" : "address-range", "filter" : ip_2_find, "ip-only" : "true"}
+        check_range = apifunctions.api_call(ip_addr, "show-objects", check_range_obj, cma_sid)
+
+        if(check_range['total'] == 0):
+            print("no range exist", end="<br>")
+        else:
+            #print(json.dumps(check_range))
+            for x in range(check_range['total']):
+                if(check_range['objects'][x]['name'] == "All_Internet"):
+                    continue
+                print(check_range['objects'][x]['name'], end="<br>")
+                #print(check_host['objects'][x]['ipv4-address'])
+                whereused_by_name(check_range['objects'][x]['name'], ip_addr, cma, cma_sid)
+        
+        time.sleep(5)
+        logout_result = apifunctions.api_call(ip_addr, "logout", {}, cma_sid)
+        if(debug == 1):
+            print(logout_result, end="<br>")
+    except:
+        if(cma_sid != ""):
+            emergency_logout = apifunctions.api_call(ip_addr, "logout", {}, cma_sid)
+        print("can't get into domain")
+#end of search_domain_4_range
+
+"""
 login to domain and see if an object with name exist
 """
 def search_domain_4_name(ip_addr, cma, name):
@@ -379,7 +414,10 @@ def main():
         if(what_2_search_for == "ipaddress"):
             #print(form.getvalue('ip2find'))
             #print("<br>")
+            print("Searching for IP Host Object", end="<br>")
             search_domain_4_ip(mds_ip, x, form.getvalue('ip2find'))
+            print("<br><br>Searching for IP-Range that matches IP", end="<br>")
+            search_domain_4_range(mds_ip, x, form.getvalue('ip2find'))
             
         elif(what_2_search_for == "name"):
             #print(form.getvalue('name2find'))
