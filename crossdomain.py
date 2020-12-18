@@ -77,6 +77,23 @@ def search_domain_4_ip(ip_addr, cma, ip_2_find):
                 print("<br>")
                 whereused_by_name(check_host['objects'][x]['name'], ip_addr, cma, cma_sid)
         
+        ### did the host thing.  now look for range
+        check_range_obj = {"type" : "address-range", "filter" : ip_2_find, "ip-only" : "true"}
+        check_range = apifunctions.api_call(ip_addr, "show-objects", check_range_obj, cma_sid)
+
+        if(check_range['total'] == 0):
+            print("no range exist", end="<br>")
+        else:
+            #print(json.dumps(check_range))
+            for x in range(check_range['total']):
+                if(check_range['objects'][x]['name'] == "All_Internet"):
+                    continue
+                print(check_range['objects'][x]['name'], end="<br>")
+                
+                whereused_by_name(check_range['objects'][x]['name'], ip_addr, cma, cma_sid)
+
+        #################
+
         #time.sleep(5)
         logout_result = apifunctions.api_call(ip_addr, "logout", {}, cma_sid)
         if(debug == 1):
@@ -416,10 +433,10 @@ def main():
         if(what_2_search_for == "ipaddress"):
             #print(form.getvalue('ip2find'))
             #print("<br>")
-            print("Searching for IP Host Object", end="<br>")
+            print("Searching for IP Host Object and Address Range", end="<br>")
             search_domain_4_ip(mds_ip, x, form.getvalue('ip2find'))
-            print("<br><br><t1>Searching for IP-Range that matches IP</t1>", end="<br>")
-            search_domain_4_range(mds_ip, x, form.getvalue('ip2find'))
+            #print("<br><br><t1>Searching for IP-Range that matches IP</t1>", end="<br>")
+            #search_domain_4_range(mds_ip, x, form.getvalue('ip2find'))
             
         elif(what_2_search_for == "name"):
             #print(form.getvalue('name2find'))
