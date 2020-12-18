@@ -9,3 +9,5 @@ then convert to web form.
 
 IP search takes too much time.  doing a login for IP then later a range search in a sep login
 is sloooow.   need to combine these into same function with same sid.
+**
+added json for range search into host search
