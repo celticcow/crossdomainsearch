@@ -5,3 +5,7 @@ search for name across all CMA
 search for a network across all cma (maybe)
 
 then convert to web form.
+
+
+IP search takes too much time.  doing a login for IP then later a range search in a sep login
+is sloooow.   need to combine these into same function with same sid.
