@@ -271,8 +271,10 @@ def whereused_by_name(name, ip_addr, cma, sid):
             print("<br>")
             sub_search = where_used_result['used-directly']['objects'][x]['name']
             ### add on 07.30 
+            ## removing to see if it speads things up  12.17.20
             print("################ Sub Search for " + sub_search + " ########################<br>")
-            whereused_by_name(sub_search, ip_addr, cma, sid)
+            print("### for full search results do a search by name for this too ###<br>")
+            ####whereused_by_name(sub_search, ip_addr, cma, sid)
 
             #print(where_used_result['used-directly']['objects'][x]['name'])
             #print(where_used_result['used-directly']['objects'][x]['type'])
@@ -416,7 +418,7 @@ def main():
             #print("<br>")
             print("Searching for IP Host Object", end="<br>")
             search_domain_4_ip(mds_ip, x, form.getvalue('ip2find'))
-            print("<br><br>Searching for IP-Range that matches IP", end="<br>")
+            print("<br><br><t1>Searching for IP-Range that matches IP</t1>", end="<br>")
             search_domain_4_range(mds_ip, x, form.getvalue('ip2find'))
             
         elif(what_2_search_for == "name"):
